@@ -1,13 +1,17 @@
 package com.example.model;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.annotations.ManyToAny;
+
+import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+
 
 
 
@@ -27,7 +31,8 @@ public class Mago {
     private String nombre;
     private int vida;
     private int nivelMagia;
-    //private List<Hechizo> conjuros;
+    @ManyToAny
+    private List<Hechizo> conjuros = new ArrayList<>();
     
     
     public Mago() {
@@ -82,6 +87,22 @@ public class Mago {
         return nivelMagia;
     }
 
+    public void setConjuros(List<Hechizo> conjuros) {
+        this.conjuros = conjuros;
+    }
+
+    public void addConjuro(Hechizo conjuro) {
+        if (conjuros == null) conjuros = new ArrayList<>();
+        conjuros.add(conjuro);
+    }
+
+    public void eliminarConjuro(Hechizo conjuro) {
+        conjuros.remove(conjuro);
+    }
+
+    public List<Hechizo> getConjuros() {
+        return conjuros;
+    }
 
     public void setNivelMagia(int nivelMagia) {
         this.nivelMagia = nivelMagia;

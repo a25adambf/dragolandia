@@ -1,15 +1,14 @@
 package com.example.controller;
 
-import org.hibernate.*;
 
 import com.example.model.HibernateUtil;
+
+import jakarta.persistence.EntityManager;
+
 import com.example.model.Dragon;
 
 
 public class ControllerDragon {
-    
-    Session session = null;
-
 
     public Dragon crearDragon(String nombre, int intensidadFuego, int resistencia) {
 
@@ -32,12 +31,12 @@ public class ControllerDragon {
 
         if (dragon != null) {
             
-            try (SessionFactory factory = HibernateUtil.getSessionFactory()) {
+            try (EntityManager em = HibernateUtil.getEntityManager()) {
             
-            session = factory.getCurrentSession();
-            Transaction tx = session.beginTransaction();
-            session.persist(dragon);
-            tx.commit();
+            em.getTransaction().begin();
+            
+            em.persist(dragon);
+            em.getTransaction().commit();
             System.out.println("Dragon guardado con id: " + dragon.getId());
             guardado = true;
 
@@ -51,90 +50,97 @@ public class ControllerDragon {
     }
 
 
+    /**
+     * Modifica el nombre del dragón
+     */
     public boolean modificarNombre(String nombre, int id) {
-
-        boolean modificado = true;
-
-        try (SessionFactory factory = HibernateUtil.getSessionFactory()) {
-
-            session = factory.getCurrentSession();
-            Transaction tx = session.beginTransaction();
-
-            Dragon dragon = session.find(Dragon.class, id);
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            Dragon dragon = em.find(Dragon.class, id);
 
             if (dragon != null) {
                 dragon.setNombre(nombre);
-                session.merge(dragon);
-                tx.commit();
-                System.out.println("Nombre modificado correctamente");
-
-            } else modificado = false;
+                em.merge(dragon);
+                em.getTransaction().commit();
+                System.out.println("Nombre del dragón modificado correctamente");
+                return true;
+            } else {
+                em.getTransaction().commit();
+                return false;
+            }
 
         } catch (Exception e) {
-            System.out.println("Error al modificar el nombre " + e.getMessage());
-            modificado = false;
-            return modificado;
+            System.out.println("Error al modificar el nombre: " + e.getMessage());
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return false;
+        } finally {
+            em.close();
         }
-
-        return modificado;
     }
-    
 
-    public boolean modificarIntesidadFuego(int intensidadFuego, int id) {
-
-        boolean modificado = true;
-
-        try (SessionFactory factory = HibernateUtil.getSessionFactory()) {
-
-            session = factory.getCurrentSession();
-            Transaction tx = session.beginTransaction();
-
-            Dragon dragon = session.find(Dragon.class, id);
+    /**
+     * Modifica la intensidad de fuego del dragón
+     */
+    public boolean modificarIntensidadFuego(int intensidad, int id) {
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            Dragon dragon = em.find(Dragon.class, id);
 
             if (dragon != null) {
-                dragon.setIntensidadFuego(intensidadFuego);
-                session.merge(dragon);
-                tx.commit();
-                System.out.println("Intensidad de fuego modificada correctamente");
-
-            } else modificado = false;
+                dragon.setIntensidadFuego(intensidad);
+                em.merge(dragon);
+                em.getTransaction().commit();
+                System.out.println("Intensidad de fuego del dragón modificada correctamente");
+                return true;
+            } else {
+                em.getTransaction().commit();
+                return false;
+            }
 
         } catch (Exception e) {
-            System.out.println("Error al modificar la intensidad de fuego " + e.getMessage());
-            modificado = false;
-            return modificado;
+            System.out.println("Error al modificar la intensidad de fuego: " + e.getMessage());
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return false;
+        } finally {
+            em.close();
         }
-
-        return modificado;
     }
 
+    /**
+     * Modifica la resistencia del dragón
+     */
     public boolean modificarResistencia(int resistencia, int id) {
-
-        boolean modificado = true;
-
+        EntityManager em = HibernateUtil.getEntityManager();
         try {
-
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            
-            Transaction tx = session.beginTransaction();
-
-            Dragon dragon = session.find(Dragon.class, id);
+            em.getTransaction().begin();
+            Dragon dragon = em.find(Dragon.class, id);
 
             if (dragon != null) {
                 dragon.setResistencia(resistencia);
-                session.merge(dragon);
-                tx.commit();
-                System.out.println("Resistencia modificada correctamente");
-
-            } else modificado = false;
+                em.merge(dragon);
+                em.getTransaction().commit();
+                System.out.println("Resistencia del dragón modificada correctamente");
+                return true;
+            } else {
+                em.getTransaction().commit();
+                return false;
+            }
 
         } catch (Exception e) {
-            System.out.println("Error al modificar la resistencia " + e.getMessage());
-            modificado = false;
-            return modificado;
+            System.out.println("Error al modificar la resistencia: " + e.getMessage());
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return false;
+        } finally {
+            em.close();
         }
-
-        return modificado;
     }
 
 
@@ -142,14 +148,15 @@ public class ControllerDragon {
 
         boolean eliminado = false;
 
-        try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            Transaction tx = session.beginTransaction();
-            Dragon dragon = session.find(Dragon.class, id);
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+
+            em.getTransaction().begin();
+            
+            Dragon dragon = em.find(Dragon.class, id);
 
             if (dragon != null) {
-                session.remove(dragon);
-                tx.commit();
+                em.remove(dragon);
+                em.getTransaction().commit();
                 eliminado = true;
                 
                 System.out.println("Eliminado con éxito");

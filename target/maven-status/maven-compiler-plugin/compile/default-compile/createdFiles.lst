@@ -1,0 +1,16 @@
+com/example/model/Dragon.class
+com/example/model/HibernateUtil.class
+com/example/controller/ControllerDragon.class
+com/example/model/BolaFuego.class
+com/example/model/TipoMonstruo.class
+com/example/controller/ControllerMago.class
+com/example/model/Mago.class
+com/example/model/Main.class
+com/example/model/Monstruo.class
+com/example/controller/ControllerBosque.class
+com/example/model/Bosque.class
+com/example/model/BolaNieve.class
+com/example/model/Hechizo.class
+com/example/controller/ControllerHechizos.class
+com/example/model/Rayo.class
+com/example/controller/ControllerMonstruo.class

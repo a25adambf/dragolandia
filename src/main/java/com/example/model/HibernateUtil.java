@@ -1,26 +1,26 @@
 package com.example.model;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 
 public class HibernateUtil {
 
-    private static SessionFactory sessionFactory;
+    private HibernateUtil() {}
 
-    private HibernateUtil() { }
+     //Mantemos a variable global estática e final do xestor de entidades único 
+    private static final EntityManagerFactory xestorEntidades =
+        Persistence.createEntityManagerFactory("dragolandiaServizo");
 
-    public static SessionFactory getSessionFactory() {
-        
-        if (sessionFactory == null) {
-            try {
-                sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();
-                
-            } catch (Exception e) {
-                throw new RuntimeException("Error al crear SessionFactory" + e.getMessage());
-            }
-        }
-
-        return sessionFactory;
+    public static EntityManager getEntityManager() {
+        return xestorEntidades.createEntityManager();
     }
+
+    
+    public static void close() {
+        if (xestorEntidades.isOpen()) {
+            xestorEntidades.close();
+        }
+    }
+
 }

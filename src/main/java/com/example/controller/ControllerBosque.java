@@ -1,16 +1,16 @@
 package com.example.controller;
 
-import org.hibernate.*;
 
 import com.example.model.HibernateUtil;
 import com.example.model.Monstruo;
+
+import jakarta.persistence.EntityManager;
+
 import com.example.model.Bosque;
 
 
 public class ControllerBosque {
     
-    Session session = null;
-
 
     public Bosque crearBosque(String nombre, int nivelPeligro, Monstruo monstruoJefe) {
 
@@ -33,110 +33,118 @@ public class ControllerBosque {
 
         if (bosque != null) {
             
-            try (SessionFactory factory = HibernateUtil.getSessionFactory()) {
+            try (EntityManager em = HibernateUtil.getEntityManager()) {
             
-            session = factory.getCurrentSession();
-            Transaction tx = session.beginTransaction();
-            session.persist(bosque);
-            tx.commit();
-            System.out.println("Bosque guardado con id: " + bosque.getId());
-            guardado = true;
+                em.getTransaction().begin();
 
-        } catch (Exception e) {
-            System.out.println("Error al guarda el Bosque " + e.getMessage());
-            
-            return guardado;
-        }
+                em.persist(bosque);
+                em.getTransaction().commit();
+                System.out.println("Bosque guardado con id: " + bosque.getId());
+                guardado = true;
+
+            } catch (Exception e) {
+                System.out.println("Error al guarda el Bosque " + e.getMessage());
+                
+                return guardado;
+            }
         }
         
         return guardado;
     }
 
 
+    /**
+     * Modifica el nombre del bosque
+     */
     public boolean modificarNombre(String nombre, int id) {
-
-        boolean modificado = true;
-
-        try (SessionFactory factory = HibernateUtil.getSessionFactory()) {
-
-            session = factory.getCurrentSession();
-            Transaction tx = session.beginTransaction();
-
-            Bosque bosque = session.find(Bosque.class, id);
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            Bosque bosque = em.find(Bosque.class, id);
 
             if (bosque != null) {
                 bosque.setNombre(nombre);
-                session.merge(bosque);
-                tx.commit();
-                System.out.println("Nombre modificado correctamente");
-
-            } else modificado = false;
+                em.merge(bosque);
+                em.getTransaction().commit();
+                System.out.println("Nombre del bosque modificado correctamente");
+                return true;
+            } else {
+                em.getTransaction().commit();
+                return false;
+            }
 
         } catch (Exception e) {
-            System.out.println("Error al modificar el nombre " + e.getMessage());
-            modificado = false;
-            return modificado;
+            System.out.println("Error al modificar el nombre: " + e.getMessage());
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return false;
+        } finally {
+            em.close();
         }
-
-        return modificado;
     }
-    
 
+    /**
+     * Modifica el nivel de peligro del bosque
+     */
     public boolean modificarNivelPeligro(int nivelPeligro, int id) {
-
-        boolean modificado = true;
-
-        try (SessionFactory factory = HibernateUtil.getSessionFactory()) {
-
-            session = factory.getCurrentSession();
-            Transaction tx = session.beginTransaction();
-
-            Bosque bosque = session.find(Bosque.class, id);
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            Bosque bosque = em.find(Bosque.class, id);
 
             if (bosque != null) {
                 bosque.setNivelPeligro(nivelPeligro);
-                session.merge(bosque);
-                tx.commit();
-                System.out.println("Intensidad de fuego modificada correctamente");
-
-            } else modificado = false;
+                em.merge(bosque);
+                em.getTransaction().commit();
+                System.out.println("Nivel de peligro del bosque modificado correctamente");
+                return true;
+            } else {
+                em.getTransaction().commit();
+                return false;
+            }
 
         } catch (Exception e) {
-            System.out.println("Error al modificar la intensidad de fuego " + e.getMessage());
-            modificado = false;
-            return modificado;
+            System.out.println("Error al modificar el nivel de peligro: " + e.getMessage());
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return false;
+        } finally {
+            em.close();
         }
-
-        return modificado;
     }
 
-    public boolean modificarMonstruoJefe(Monstruo monstruo, int id) {
-
-        boolean modificado = true;
-
+    /**
+     * Modifica el monstruo jefe del bosque
+     */
+    public boolean modificarMonstruoJefe(int monstruoJefeId, int bosqueId) {
+        EntityManager em = HibernateUtil.getEntityManager();
         try {
+            em.getTransaction().begin();
+            Bosque bosque = em.find(Bosque.class, bosqueId);
+            Monstruo monstruo = em.find(Monstruo.class, monstruoJefeId);
 
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            
-            Transaction tx = session.beginTransaction();
-
-            Bosque bosque = session.find(Bosque.class, id);
-
-            if (bosque != null) {
+            if (bosque != null && monstruo != null) {
                 bosque.setMonstruoJefe(monstruo);
-                session.merge(bosque);
-                tx.commit();
-                System.out.println("Resistencia modificada correctamente");
-
-            } else modificado = false;
+                em.merge(bosque);
+                em.getTransaction().commit();
+                System.out.println("Monstruo jefe del bosque modificado correctamente");
+                return true;
+            } else {
+                em.getTransaction().commit();
+                return false;
+            }
 
         } catch (Exception e) {
-            System.out.println("Error al modificar la resistencia " + e.getMessage());
-            modificado = false;
-            return modificado;
+            System.out.println("Error al modificar el monstruo jefe: " + e.getMessage());
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            return false;
+        } finally {
+            em.close();
         }
-
-        return modificado;
     }
 
 
@@ -145,14 +153,15 @@ public class ControllerBosque {
 
         boolean eliminado = false;
 
-        try {
-            session = HibernateUtil.getSessionFactory().getCurrentSession();
-            Transaction tx = session.beginTransaction();
-            Bosque bosque = session.find(Bosque.class, id);
+        try (EntityManager em = HibernateUtil.getEntityManager()){
+
+            em.getTransaction().begin();
+
+            Bosque bosque = em.find(Bosque.class, id);
 
             if (bosque != null) {
-                session.remove(bosque);
-                tx.commit();
+                em.remove(bosque);
+                em.getTransaction().commit();
                 eliminado = true;
                 
                 System.out.println("Eliminado con éxito");

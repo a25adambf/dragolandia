@@ -2,15 +2,20 @@ package com.example.model;
 
 import java.util.List;
 
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
 @Entity
+@Table(name = "Hechizos")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Hechizo {
 
+    @Id
     private int id;
     private String nombre;
     private String descripcion;
@@ -21,7 +26,7 @@ public abstract class Hechizo {
     
     public Hechizo() {
         
-    }    
+    }           
     
     public Hechizo(int id, String nombre, String descripcion) {
         this.id = id;

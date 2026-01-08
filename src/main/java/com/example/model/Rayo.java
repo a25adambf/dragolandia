@@ -6,19 +6,19 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "Bola de nieve")
-public class BolaNieve extends Hechizo {
-    
-    public BolaNieve() {
-            super(2,"Bola de nieve", "Una bola de nieve que congela al enemigo impactado matándolo.");
-        }
+@DiscriminatorValue(value = "Rayo")
+public class Rayo extends Hechizo {
+
+    public Rayo() {
+        super(3, "Rayo", "Invoca un rayo que daña a un enemigo.");
+    }
 
     @Override
     public void efecto(Mago lanzador, List<Monstruo> objetivos) {
         
         if (objetivos.size() < 2 && objetivos.size() > 0) {
             for (Monstruo monstruo : objetivos) {
-                monstruo.setVida(0);
+                monstruo.setVida(monstruo.getVida() - 10*lanzador.getNivelMagia());
             }
         }
     }
