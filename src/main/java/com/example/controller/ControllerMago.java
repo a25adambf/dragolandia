@@ -24,11 +24,9 @@ public class ControllerMago {
 
 
 
-    public boolean guardarMago(String nombre, int vida, int nivelMagia) {
+    public Mago guardarMago(String nombre, int vida, int nivelMagia) {
         
         Mago mago = crearMago(nombre, vida, nivelMagia);
-
-        boolean guardado = false;
 
         if (mago != null) {
             
@@ -40,15 +38,14 @@ public class ControllerMago {
             em.getTransaction().commit();
 
             System.out.println("Mago guardado con id: " + mago.getId());
-            guardado = true;
 
         } catch (Exception e) {
             System.out.println("Error al guarda el mago " + e.getMessage());
-            return guardado;
+            return null;
         }
         }
         
-        return guardado;
+        return mago;
     }
 
 
@@ -192,17 +189,17 @@ public class ControllerMago {
      * Verifica si un hechizo ya existe en la lista de conjuros del mago
      */
     private boolean hechizoYaExisteEnMago(Mago mago, int hechizoId) {
-        if (mago.getConjuros() == null || mago.getConjuros().isEmpty()) {
-            return false;
-        }
+        boolean existe = false;
 
-        for (Hechizo hechizo : mago.getConjuros()) {
-            if (hechizo.getId() == hechizoId) {
-                return true;
+        if (mago.getConjuros() != null || mago.getConjuros().isEmpty() == false) {
+            for (Hechizo hechizo : mago.getConjuros()) {
+                if (hechizo.getId() == hechizoId) {
+                    existe = true;
+                }
             }
         }
         
-        return false;
+        return existe;
     }
 
     /**
@@ -244,15 +241,16 @@ public class ControllerMago {
      * Obtiene todos los hechizos de un mago
      */
     public java.util.List<Hechizo> obtenerHechizos(int magoId) {
+        
+        java.util.List<Hechizo> hechizos = new java.util.ArrayList<>();
+
         EntityManager em = HibernateUtil.getEntityManager();
         try {
             Mago mago = em.find(Mago.class, magoId);
             if (mago != null && mago.getConjuros() != null) {
-                // Inicializar la colección para evitar LazyInitializationException
-                java.util.List<Hechizo> hechizos = new java.util.ArrayList<>(mago.getConjuros());
-                return hechizos;
+                hechizos = new java.util.ArrayList<>(mago.getConjuros());
             }
-            return new java.util.ArrayList<>();
+            return hechizos;
         } finally {
             em.close();
         }
@@ -262,13 +260,15 @@ public class ControllerMago {
      * Obtiene la cantidad de hechizos que tiene un mago
      */
     public int contarHechizos(int magoId) {
+        int numHechizos  = 0;
+
         EntityManager em = HibernateUtil.getEntityManager();
         try {
             Mago mago = em.find(Mago.class, magoId);
             if (mago != null && mago.getConjuros() != null) {
-                return mago.getConjuros().size();
+                numHechizos = mago.getConjuros().size();
             }
-            return 0;
+            return numHechizos;
         } finally {
             em.close();
         }

@@ -2,7 +2,6 @@ package com.example.model;
 
 import java.util.List;
 
-import org.hibernate.annotations.ManyToAny;
 
 import java.util.ArrayList;
 
@@ -10,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 
@@ -31,7 +31,7 @@ public class Mago {
     private String nombre;
     private int vida;
     private int nivelMagia;
-    @ManyToAny
+    @ManyToMany
     private List<Hechizo> conjuros = new ArrayList<>();
     
     
@@ -79,8 +79,10 @@ public class Mago {
 
 
     public void setVida(int vida) {
-            this.vida = vida;
-    }
+        if (vida < 0 ) {
+            this.vida = 0;
+        } else
+            this.vida = vida;    }
 
 
     public int getNivelMagia() {
@@ -105,6 +107,9 @@ public class Mago {
     }
 
     public void setNivelMagia(int nivelMagia) {
-        this.nivelMagia = nivelMagia;
-    }
+        if (nivelMagia < 0 ) {
+            this.nivelMagia = 0;
+        } else
+            this.nivelMagia = nivelMagia;    
+        }
 }

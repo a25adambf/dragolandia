@@ -24,11 +24,10 @@ public class ControllerMonstruo {
 
 
 
-    public boolean guardarMonstruo(String nombre, int vida, TipoMonstruo tipo, int fuerza) {
+    public Monstruo guardarMonstruo(String nombre, int vida, TipoMonstruo tipo, int fuerza) {
         
         Monstruo monstruo = crearMonstruo(nombre, vida, tipo, fuerza);
 
-        boolean guardado = false;
 
         if (monstruo != null) {
             
@@ -39,15 +38,14 @@ public class ControllerMonstruo {
             em.persist(monstruo);
             em.getTransaction().commit();
             System.out.println("Monstruo guardado con id: " + monstruo.getId());
-            guardado = true;
 
         } catch (Exception e) {
             System.out.println("Error al guarda el Monstruo " + e.getMessage());
-            return guardado;
+            return null;
         }
         }
         
-        return guardado;
+        return monstruo;
     }
 
 

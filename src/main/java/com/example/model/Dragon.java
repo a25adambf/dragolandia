@@ -32,7 +32,6 @@ public class Dragon {
 
 
     public void exhalar(Monstruo monstruo) {
-
         monstruo.setVida(monstruo.getVida() - intensidadFuego);
     }
 

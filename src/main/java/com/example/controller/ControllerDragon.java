@@ -23,11 +23,10 @@ public class ControllerDragon {
 
 
 
-    public boolean guardarDragon(String nombre, int intensidadFuego, int resistencia) {
+    public Dragon guardarDragon(String nombre, int intensidadFuego, int resistencia) {
         
         Dragon dragon = crearDragon(nombre, intensidadFuego, resistencia);
 
-        boolean guardado = false;
 
         if (dragon != null) {
             
@@ -38,15 +37,14 @@ public class ControllerDragon {
             em.persist(dragon);
             em.getTransaction().commit();
             System.out.println("Dragon guardado con id: " + dragon.getId());
-            guardado = true;
 
         } catch (Exception e) {
             System.out.println("Error al guarda el Dragon " + e.getMessage());
-            return guardado;
+            return null;
         }
         }
         
-        return guardado;
+        return dragon;
     }
 
 
@@ -143,6 +141,24 @@ public class ControllerDragon {
         }
     }
 
+
+    public Dragon obtenerDragon(int id) {
+
+     Dragon dragon = null;
+
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+            
+            em.getTransaction().begin();
+
+            dragon = em.find (Dragon.class, id);
+
+        } catch (Exception e) {
+            System.out.println("Error al obtener el dragón " + e.getMessage());
+            return dragon;
+        }
+
+        return dragon;
+    }
 
     public boolean eliminarDragon(int id) {
 

@@ -2,6 +2,7 @@ package com.example.controller;
 
 import com.example.model.HibernateUtil;
 import com.example.model.Hechizo;
+import com.example.model.AtaqueBasico;
 import com.example.model.BolaFuego;
 import com.example.model.BolaNieve;
 import com.example.model.Rayo;
@@ -15,6 +16,8 @@ public class ControllerHechizos {
     private static final int ID_BOLA_FUEGO = 1;
     private static final int ID_BOLA_NIEVE = 2;
     private static final int ID_RAYO = 3;
+    private static final int ID_ATAQUE_BASICO = 4;
+
 
     /**
      * Obtiene o crea la instancia única de BolaFuego en la base de datos
@@ -87,6 +90,32 @@ public class ControllerHechizos {
             return rayo;
         } catch (Exception e) {
             System.out.println("Error al obtener Rayo: " + e.getMessage());
+            return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    /**
+     * Obtiene o crea la instancia única de Ataque Básico en la base de datos
+     */
+    public AtaqueBasico obtenerAtaqueBasico() {
+        EntityManager em = HibernateUtil.getEntityManager();
+        try {
+             AtaqueBasico ataqueBasico = em.find(AtaqueBasico.class, ID_ATAQUE_BASICO);
+            
+            if (ataqueBasico == null) {
+                // No existe en la base de datos, crear nueva
+                ataqueBasico = new AtaqueBasico();
+                em.getTransaction().begin();
+                em.persist(ataqueBasico);
+                em.getTransaction().commit();
+                System.out.println("Hechizo Ataque Básico guardado con id: " + ataqueBasico.getId());
+            }
+            
+            return ataqueBasico;
+        } catch (Exception e) {
+            System.out.println("Error al obtener Ataque Básico: " + e.getMessage());
             return null;
         } finally {
             em.close();
@@ -173,6 +202,7 @@ public class ControllerHechizos {
         obtenerBolaFuego();
         obtenerBolaNieve();
         obtenerRayo();
+        obtenerAtaqueBasico();
         System.out.println("Hechizos inicializados correctamente");
     }
 }

@@ -34,10 +34,10 @@ public class Bosque {
         
     }
     
-    public Bosque(String nombre, int nivelPeligro, Monstruo monstruoJefe) {
+    public Bosque(String nombre, int nivelPeligro, Dragon dragon) {
         this.nombre = nombre;
         this.nivelPeligro = nivelPeligro;
-        this.monstruoJefe = monstruoJefe;
+        this.dragon = dragon;
     }
 
     public void mostrarJefe() {

@@ -21,14 +21,14 @@ public class Main {
         BolaFuego bolaFuego = ch.obtenerBolaFuego();
         BolaNieve bolaNieve = ch.obtenerBolaNieve();
         Rayo rayo = ch.obtenerRayo();
+        AtaqueBasico ataqueBasico = ch.obtenerAtaqueBasico();
 
         System.out.println("Hechizo BolaFuego: " + bolaFuego.getNombre() + " (ID: " + bolaFuego.getId() + ")");
         System.out.println("Hechizo BolaNieve: " + bolaNieve.getNombre() + " (ID: " + bolaNieve.getId() + ")");
         System.out.println("Hechizo Rayo: " + rayo.getNombre() + " (ID: " + rayo.getId() + ")");
 
         // Guardar un mago
-        boolean magoGuardado = cm.guardarMago("mago", 40, 5);
-        System.out.println("Mago guardado: " + magoGuardado);
+        cm.guardarMago("mago", 40, 5);
 
         // Ejemplo de modificación de hechizo único
         ch.modificarDescripcion("Una bola de fuego más potente", bolaFuego.getId());
