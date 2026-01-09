@@ -1,16 +1,53 @@
 package com.example.controller;
 
 
+import com.example.model.Dragon;
 import com.example.model.Hechizo;
 import com.example.model.HibernateUtil;
 import com.example.model.Mago;
 
 import jakarta.persistence.EntityManager;
 
-
+/**
+ * Clase ControllerMago - Controlador para operaciones CRUD de magos.
+ * 
+ * Este controlador gestiona todas las operaciones de persistencia
+ * relacionadas con los magos (Mago) incluyendo:
+ * - Crear, leer, actualizar y eliminar magos (CRUD)
+ * - Modificar atributos específicos (nombre, vida, nivel de magia)
+ * - Gestionar hechizos asociados a cada mago
+ * - Verificar y contar hechizos del mago
+ * 
+ * Implementa el patrón DAO (Data Access Object) usando Jakarta Persistence.
+ * 
+ * Métodos principales:
+ * - crearMago(): Crea nueva instancia en memoria
+ * - guardarMago(): Persiste mago en BD
+ * - obtenerMago(): Recupera mago de BD por ID
+ * - modificarNombre/Vida/NivelMagia(): Actualiza atributos
+ * - anadirHechizo/eliminarHechizo(): Gestiona hechizos del mago
+ * - obtenerHechizos/contarHechizos(): Consulta hechizos
+ * - eliminarMago(): Borra mago de BD
+ * 
+ * @see Mago
+ * @see HibernateUtil
+ * @see Hechizo
+ */
 public class ControllerMago {
     
-
+    /**
+     * Crea una nueva instancia de Mago en memoria sin persistencia.
+     * 
+     * Valida que los parámetros sean válidos:
+     * - nombre con longitud > 0
+     * - vida > 0
+     * - nivelMagia > 0
+     * 
+     * @param nombre El nombre del mago
+     * @param vida Los puntos de vida del mago
+     * @param nivelMagia El nivel de poder mágico del mago
+     * @return Nuevo Mago si los parámetros son válidos, null en caso contrario
+     */
     public Mago crearMago(String nombre, int vida, int nivelMagia) {
 
         Mago mago = null;
@@ -22,8 +59,17 @@ public class ControllerMago {
         return mago;
     }
 
-
-
+    /**
+     * Crea y persiste un nuevo mago en la BD.
+     * 
+     * Realiza validación mediante crearMago() y luego
+     * persiste el mago en la BD si es válido.
+     * 
+     * @param nombre El nombre del mago
+     * @param vida Los puntos de vida iniciales
+     * @param nivelMagia El nivel de poder mágico inicial
+     * @return El Mago persistido con ID asignado, o null si hay error
+     */
     public Mago guardarMago(String nombre, int vida, int nivelMagia) {
         
         Mago mago = crearMago(nombre, vida, nivelMagia);
@@ -48,9 +94,12 @@ public class ControllerMago {
         return mago;
     }
 
-
     /**
-     * Modifica el nombre del mago
+     * Modifica el nombre de un mago existente.
+     * 
+     * @param nombre El nuevo nombre del mago
+     * @param id El ID del mago a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarNombre(String nombre, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -81,7 +130,11 @@ public class ControllerMago {
     }
 
     /**
-     * Modifica la vida del mago
+     * Modifica los puntos de vida de un mago existente.
+     * 
+     * @param vida El nuevo valor de vida del mago
+     * @param id El ID del mago a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarVida(int vida, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -112,7 +165,11 @@ public class ControllerMago {
     }
 
     /**
-     * Modifica el nivel de magia del mago
+     * Modifica el nivel de poder mágico de un mago existente.
+     * 
+     * @param nivelMagia El nuevo nivel de magia del mago
+     * @param id El ID del mago a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarNivelMagia(int nivelMagia, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -144,7 +201,14 @@ public class ControllerMago {
 
 
     /**
-     * Añade un hechizo al mago (sin permitir duplicados)
+     * Añade un hechizo al mago si no lo tiene ya.
+     * 
+     * Verifica que el mago y hechizo existan y que el mago
+     * no tenga el hechizo previamente para evitar duplicados.
+     * 
+     * @param magoId El ID del mago
+     * @param hechizoId El ID del hechizo a añadir
+     * @return true si se añadió correctamente, false en caso contrario
      */
     public boolean anadirHechizo(int magoId, int hechizoId) {
         boolean anadido = false;
@@ -186,7 +250,13 @@ public class ControllerMago {
     }
 
     /**
-     * Verifica si un hechizo ya existe en la lista de conjuros del mago
+     * Verifica si un hechizo con ID específico ya existe en la lista de conjuros del mago.
+     * 
+     * Método auxiliar privado utilizado para evitar duplicados al añadir hechizos.
+     * 
+     * @param mago El mago del cual verificar hechizos
+     * @param hechizoId El ID del hechizo a verificar
+     * @return true si el mago ya tiene ese hechizo, false en caso contrario
      */
     private boolean hechizoYaExisteEnMago(Mago mago, int hechizoId) {
         boolean existe = false;
@@ -203,7 +273,11 @@ public class ControllerMago {
     }
 
     /**
-     * Elimina un hechizo del mago
+     * Elimina un hechizo del mago.
+     * 
+     * @param magoId El ID del mago
+     * @param hechizoId El ID del hechizo a eliminar
+     * @return true si se eliminó correctamente, false en caso contrario
      */
     public boolean eliminarHechizo(int magoId, int hechizoId) {
         boolean eliminado = false;
@@ -238,7 +312,10 @@ public class ControllerMago {
     }
 
     /**
-     * Obtiene todos los hechizos de un mago
+     * Obtiene la lista de todos los hechizos conocidos por un mago.
+     * 
+     * @param magoId El ID del mago
+     * @return Lista de hechizos del mago, o lista vacía si no hay hechizos
      */
     public java.util.List<Hechizo> obtenerHechizos(int magoId) {
         
@@ -257,7 +334,10 @@ public class ControllerMago {
     }
 
     /**
-     * Obtiene la cantidad de hechizos que tiene un mago
+     * Cuenta la cantidad total de hechizos conocidos por un mago.
+     * 
+     * @param magoId El ID del mago
+     * @return El número de hechizos del mago, 0 si no hay hechizos
      */
     public int contarHechizos(int magoId) {
         int numHechizos  = 0;
@@ -274,7 +354,36 @@ public class ControllerMago {
         }
     }
 
+    /**
+     * Obtiene un mago de la BD por su ID.
+     * 
+     * @param id El ID único del mago
+     * @return El mago encontrado, o null si no existe
+     */
+    public Mago obtenerMago(int id) {
 
+    Mago mago = null;
+
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+            
+            em.getTransaction().begin();
+
+            mago = em.find (Mago.class, id);
+
+        } catch (Exception e) {
+            System.out.println("Error al obtener el dragón " + e.getMessage());
+            return null;
+        }
+
+        return mago;
+    }
+
+    /**
+     * Elimina un mago de la BD por su ID.
+     * 
+     * @param id El ID del mago a eliminar
+     * @return true si se eliminó correctamente, false en caso contrario
+     */
     public boolean eliminarMago(int id) {
 
         boolean eliminado = false;

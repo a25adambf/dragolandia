@@ -7,9 +7,41 @@ import jakarta.persistence.EntityManager;
 
 import com.example.model.Dragon;
 
-
+/**
+ * Clase ControllerDragon - Controlador para operaciones CRUD del dragón.
+ * 
+ * Este controlador gestiona todas las operaciones de persistencia
+ * relacionadas con el dragón aliado (Dragon) incluyendo:
+ * - Crear, leer, actualizar y eliminar dragón (CRUD)
+ * - Modificar atributos específicos (nombre, intensidad de fuego, resistencia)
+ * 
+ * Implementa el patrón DAO (Data Access Object) usando Jakarta Persistence.
+ * 
+ * Métodos principales:
+ * - crearDragon(): Crea nueva instancia en memoria
+ * - guardarDragon(): Persiste dragón en BD
+ * - obtenerDragon(): Recupera dragón de BD por ID
+ * - modificarNombre/IntensidadFuego/Resistencia(): Actualiza atributos
+ * - eliminarDragon(): Borra dragón de BD
+ * 
+ * @see Dragon
+ * @see HibernateUtil
+ */
 public class ControllerDragon {
 
+    /**
+     * Crea una nueva instancia de Dragon en memoria sin persistencia.
+     * 
+     * Valida que los parámetros sean válidos:
+     * - nombre con longitud > 0
+     * - intensidadFuego > 0
+     * - resistencia > 0
+     * 
+     * @param nombre El nombre del dragón
+     * @param intensidadFuego El poder de ataque del dragón
+     * @param resistencia La resistencia/defensa del dragón
+     * @return Nuevo Dragon si los parámetros son válidos, null en caso contrario
+     */
     public Dragon crearDragon(String nombre, int intensidadFuego, int resistencia) {
 
         Dragon dragon = null;
@@ -21,8 +53,17 @@ public class ControllerDragon {
         return dragon;
     }
 
-
-
+    /**
+     * Crea y persiste un nuevo dragón en la BD.
+     * 
+     * Realiza validación mediante crearDragon() y luego
+     * persiste el dragón en la BD si es válido.
+     * 
+     * @param nombre El nombre del dragón
+     * @param intensidadFuego El poder de ataque inicial
+     * @param resistencia La resistencia inicial
+     * @return El Dragon persistido con ID asignado, o null si hay error
+     */
     public Dragon guardarDragon(String nombre, int intensidadFuego, int resistencia) {
         
         Dragon dragon = crearDragon(nombre, intensidadFuego, resistencia);
@@ -49,7 +90,11 @@ public class ControllerDragon {
 
 
     /**
-     * Modifica el nombre del dragón
+     * Modifica el nombre del dragón.
+     * 
+     * @param nombre El nuevo nombre del dragón
+     * @param id El ID del dragón a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarNombre(String nombre, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -80,7 +125,11 @@ public class ControllerDragon {
     }
 
     /**
-     * Modifica la intensidad de fuego del dragón
+     * Modifica la intensidad de fuego del dragón.
+     * 
+     * @param intensidad El nuevo valor de intensidad de fuego
+     * @param id El ID del dragón a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarIntensidadFuego(int intensidad, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -111,7 +160,11 @@ public class ControllerDragon {
     }
 
     /**
-     * Modifica la resistencia del dragón
+     * Modifica la resistencia del dragón.
+     * 
+     * @param resistencia El nuevo valor de resistencia
+     * @param id El ID del dragón a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarResistencia(int resistencia, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -140,11 +193,15 @@ public class ControllerDragon {
             em.close();
         }
     }
-
-
+    /**
+     * Obtiene un dragón de la BD por su ID.
+     * 
+     * @param id El ID único del dragón
+     * @return El dragón encontrado, o null si no existe
+     */
     public Dragon obtenerDragon(int id) {
 
-     Dragon dragon = null;
+    Dragon dragon = null;
 
         try (EntityManager em = HibernateUtil.getEntityManager()) {
             
@@ -159,7 +216,12 @@ public class ControllerDragon {
 
         return dragon;
     }
-
+    /**
+     * Elimina un dragón de la BD por su ID.
+     * 
+     * @param id El ID del dragón a eliminar
+     * @return true si se eliminó correctamente, false en caso contrario
+     */
     public boolean eliminarDragon(int id) {
 
         boolean eliminado = false;

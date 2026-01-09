@@ -1,16 +1,50 @@
 package com.example.controller;
 
 
+import com.example.model.Dragon;
 import com.example.model.HibernateUtil;
 import com.example.model.Monstruo;
 import com.example.model.TipoMonstruo;
 
 import jakarta.persistence.EntityManager;
 
-
+/**
+ * Clase ControllerMonstruo - Controlador para operaciones CRUD de monstruos.
+ * 
+ * Este controlador gestiona todas las operaciones de persistencia
+ * relacionadas con los monstruos enemigos (Monstruo) incluyendo:
+ * - Crear, leer, actualizar y eliminar monstruos (CRUD)
+ * - Modificar atributos específicos (nombre, vida, fuerza, tipo)
+ * 
+ * Implementa el patrón DAO (Data Access Object) usando Jakarta Persistence.
+ * 
+ * Métodos principales:
+ * - crearMonstruo(): Crea nueva instancia en memoria
+ * - guardarMonstruo(): Persiste monstruo en BD
+ * - obtenerMonstruo(): Recupera monstruo de BD por ID
+ * - modificarNombre/Vida/Fuerza/Tipo(): Actualiza atributos
+ * - eliminarMonstruo(): Borra monstruo de BD
+ * 
+ * @see Monstruo
+ * @see HibernateUtil
+ * @see TipoMonstruo
+ */
 public class ControllerMonstruo {
     
-
+    /**
+     * Crea una nueva instancia de Monstruo en memoria sin persistencia.
+     * 
+     * Valida que los parámetros sean válidos:
+     * - nombre con longitud > 0
+     * - vida > 0
+     * - fuerza > 0
+     * 
+     * @param nombre El nombre del monstruo
+     * @param vida Los puntos de vida del monstruo
+     * @param tipo El tipo de monstruo (ogro, troll, espectro)
+     * @param fuerza El poder de ataque del monstruo
+     * @return Nuevo Monstruo si los parámetros son válidos, null en caso contrario
+     */
     public Monstruo crearMonstruo(String nombre, int vida,TipoMonstruo tipo , int fuerza) {
 
         Monstruo monstruo = null;
@@ -22,8 +56,18 @@ public class ControllerMonstruo {
         return monstruo;
     }
 
-
-
+    /**
+     * Crea y persiste un nuevo monstruo en la BD.
+     * 
+     * Realiza validación mediante crearMonstruo() y luego
+     * persiste el monstruo en la BD si es válido.
+     * 
+     * @param nombre El nombre del monstruo
+     * @param vida Los puntos de vida iniciales
+     * @param tipo El tipo de monstruo
+     * @param fuerza El poder de ataque inicial
+     * @return El Monstruo persistido con ID asignado, o null si hay error
+     */
     public Monstruo guardarMonstruo(String nombre, int vida, TipoMonstruo tipo, int fuerza) {
         
         Monstruo monstruo = crearMonstruo(nombre, vida, tipo, fuerza);
@@ -50,7 +94,11 @@ public class ControllerMonstruo {
 
 
     /**
-     * Modifica el nombre del monstruo
+     * Modifica el nombre de un monstruo existente.
+     * 
+     * @param nombre El nuevo nombre del monstruo
+     * @param id El ID del monstruo a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarNombre(String nombre, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -81,7 +129,11 @@ public class ControllerMonstruo {
     }
 
     /**
-     * Modifica la vida del monstruo
+     * Modifica los puntos de vida de un monstruo existente.
+     * 
+     * @param vida El nuevo valor de vida del monstruo
+     * @param id El ID del monstruo a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarVida(int vida, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -112,7 +164,11 @@ public class ControllerMonstruo {
     }
 
     /**
-     * Modifica la fuerza del monstruo
+     * Modifica el poder de ataque de un monstruo existente.
+     * 
+     * @param fuerza El nuevo valor de fuerza del monstruo
+     * @param id El ID del monstruo a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarFuerza(int fuerza, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -143,7 +199,11 @@ public class ControllerMonstruo {
     }
 
     /**
-     * Modifica el tipo del monstruo
+     * Modifica el tipo de un monstruo existente.
+     * 
+     * @param tipo El nuevo tipo del monstruo (ogro, troll, espectro)
+     * @param id El ID del monstruo a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarTipo(TipoMonstruo tipo, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -172,8 +232,35 @@ public class ControllerMonstruo {
             em.close();
         }
     }
+    /**
+     * Obtiene un monstruo de la BD por su ID.
+     * 
+     * @param id El ID único del monstruo
+     * @return El monstruo encontrado, o null si no existe
+     */
+    public Monstruo obtenerMonstruo(int id) {
 
+    Monstruo monstruo = null;
 
+        try (EntityManager em = HibernateUtil.getEntityManager()) {
+            
+            em.getTransaction().begin();
+
+            monstruo = em.find (Monstruo.class, id);
+
+        } catch (Exception e) {
+            System.out.println("Error al obtener el dragón " + e.getMessage());
+            return monstruo;
+        }
+
+        return monstruo;
+    }
+    /**
+     * Elimina un monstruo de la BD por su ID.
+     * 
+     * @param id El ID del monstruo a eliminar
+     * @return true si se eliminó correctamente, false en caso contrario
+     */
     public boolean eliminarMonstruo(int id) {
 
         boolean eliminado = false;

@@ -11,15 +11,46 @@ import com.example.model.Dragon;
 import java.util.List;
 import java.util.ArrayList;
 
-
+/**
+ * Clase ControllerBosque - Controlador para operaciones CRUD del bosque.
+ * 
+ * Este controlador gestiona todas las operaciones de persistencia
+ * relacionadas con el bosque (Bosque) incluyendo:
+ * - Crear, leer, actualizar y eliminar bosque (CRUD)
+ * - Modificar atributos (nombre, nivel de peligro, monstruo jefe)
+ * - Gestionar la lista de monstruos del bosque
+ * - Búsqueda de monstruos en el bosque
+ * 
+ * Implementa el patrón DAO (Data Access Object) usando Jakarta Persistence.
+ * 
+ * Métodos principales:
+ * - crearBosque(): Crea nueva instancia en memoria
+ * - guardarBosque(): Persiste bosque en BD
+ * - obtenerBosque(): Recupera bosque de BD por ID
+ * - modificarNombre/NivelPeligro/MonstruoJefe(): Actualiza atributos
+ * - anadirMonstruo/eliminarMonstruo(): Gestiona monstruos
+ * - obtenerMonstruos/buscarMonstruoEnBosque(): Consulta monstruos
+ * - eliminarBosque(): Borra bosque de BD
+ * 
+ * @see Bosque
+ * @see HibernateUtil
+ * @see Monstruo
+ * @see Dragon
+ */
 public class ControllerBosque {
     
     /**
-     * Crea un objeto bosque
-     * @param nombre
-     * @param nivelPeligro
-     * @param monstruoJefe
-     * @return
+     * Crea una nueva instancia de Bosque en memoria sin persistencia.
+     * 
+     * Valida que los parámetros sean válidos:
+     * - nombre con longitud > 0
+     * - nivelPeligro > 0
+     * - dragon no null
+     * 
+     * @param nombre El nombre del bosque
+     * @param nivelPeligro El nivel de dificultad del bosque
+     * @param dragon El dragón aliado del bosque
+     * @return Nuevo Bosque si los parámetros son válidos, null en caso contrario
      */
     public Bosque crearBosque(String nombre, int nivelPeligro, Dragon dragon) {
 
@@ -33,18 +64,19 @@ public class ControllerBosque {
     }
 
     /**
-     * Crea y añade un objeto bosque a la base de datos
-     * @param nombre
-     * @param nivelPeligro
-     * @param monstruoJefe
-     * @return
+     * Crea y persiste un nuevo bosque en la BD.
+     * 
+     * Realiza validación mediante crearBosque() y luego
+     * persiste el bosque en la BD si es válido.
+     * 
+     * @param nombre El nombre del bosque
+     * @param nivelPeligro El nivel de dificultad inicial
+     * @param dragon El dragón aliado del bosque
+     * @return El Bosque persistido con ID asignado, o null si hay error
      */
-
-    public boolean guardarBosque(String nombre, int nivelPeligro, Dragon dragon) {
+    public Bosque guardarBosque(String nombre, int nivelPeligro, Dragon dragon) {
         
         Bosque bosque = crearBosque(nombre, nivelPeligro, dragon);
-
-        boolean guardado = false;
 
         if (bosque != null) {
             
@@ -55,24 +87,24 @@ public class ControllerBosque {
                 em.persist(bosque);
                 em.getTransaction().commit();
                 System.out.println("Bosque guardado con id: " + bosque.getId());
-                guardado = true;
 
             } catch (Exception e) {
                 System.out.println("Error al guarda el Bosque " + e.getMessage());
                 
-                return guardado;
+                return null;
             }
         }
         
-        return guardado;
+        return bosque;
     }
 
 
-   /**
-    * Modifica el nombre del bosque
-    * @param nombre
-    * @param id
-    * @return
+    /**
+    * Modifica el nombre del bosque.
+    * 
+    * @param nombre El nuevo nombre del bosque
+    * @param id El ID del bosque a modificar
+    * @return true si se modificó correctamente, false en caso contrario
     */
     public boolean modificarNombre(String nombre, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -103,10 +135,11 @@ public class ControllerBosque {
     }
 
     /**
-     * Modifica el nivel de peligro del bosque
-     * @param nivelPeligro
-     * @param id
-     * @return
+     * Modifica el nivel de peligro del bosque.
+     * 
+     * @param nivelPeligro El nuevo nivel de peligro/dificultad
+     * @param id El ID del bosque a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarNivelPeligro(int nivelPeligro, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -137,10 +170,14 @@ public class ControllerBosque {
     }
 
     /**
-     * Modifica el monstruo jefe del bosque
-     * @param monstruoJefeId
-     * @param bosqueId
-     * @return
+     * Modifica el monstruo jefe del bosque.
+     * 
+     * Verifica que el monstruo exista en la lista del bosque
+     * antes de establecerlo como jefe.
+     * 
+     * @param monstruoJefeId El ID del nuevo monstruo jefe
+     * @param bosqueId El ID del bosque a modificar
+     * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarMonstruoJefe(int monstruoJefeId, int bosqueId) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -189,7 +226,12 @@ public class ControllerBosque {
         }
     }
 
-
+    /**
+     * Obtiene un bosque de la BD por su ID.
+     * 
+     * @param id El ID único del bosque
+     * @return El bosque encontrado, o null si no existe
+     */
     public Bosque obtenerBosque(int id) {
 
         Bosque bosque = null;
@@ -209,9 +251,10 @@ public class ControllerBosque {
     }
 
     /**
-     * Obtiene la lista de monstruos de un bosque
-     * @param bosqueId
-     * @return lista de monstruos o null si no existe el bosque
+     * Obtiene la lista de monstruos de un bosque.
+     * 
+     * @param bosqueId El ID del bosque
+     * @return Lista de monstruos del bosque, o null si no existe el bosque
      */
     public List<Monstruo> obtenerMonstruos(int bosqueId) {
         List<Monstruo> lista = null;
@@ -230,10 +273,13 @@ public class ControllerBosque {
     }
 
     /**
-     * Añade un monstruo a la lista del bosque (por id de monstruo)
-     * @param bosqueId
-     * @param monstruoId
-     * @return true si se añadió, false si no
+     * Añade un monstruo a la lista del bosque.
+     * 
+     * Verifica que no exista un duplicado antes de añadir.
+     * 
+     * @param bosqueId El ID del bosque
+     * @param monstruoId El ID del monstruo a añadir
+     * @return true si se añadió correctamente, false en caso contrario
      */
     public boolean anadirMonstruo(int bosqueId, int monstruoId) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -274,10 +320,11 @@ public class ControllerBosque {
     }
 
     /**
-     * Elimina un monstruo de la lista del bosque (por id de monstruo)
-     * @param bosqueId
-     * @param monstruoId
-     * @return true si se eliminó, false si no
+     * Elimina un monstruo de la lista del bosque.
+     * 
+     * @param bosqueId El ID del bosque
+     * @param monstruoId El ID del monstruo a eliminar
+     * @return true si se eliminó correctamente, false en caso contrario
      */
     public boolean eliminarMonstruo(int bosqueId, int monstruoId) {
         EntityManager em = HibernateUtil.getEntityManager();
@@ -315,10 +362,11 @@ public class ControllerBosque {
     }
 
     /**
-     * Busca un monstruo dentro de la lista de un bosque por id
-     * @param bosqueId
-     * @param monstruoId
-     * @return Monstruo si se encuentra, null si no
+     * Busca un monstruo dentro de la lista de un bosque por ID.
+     * 
+     * @param bosqueId El ID del bosque
+     * @param monstruoId El ID del monstruo a buscar
+     * @return El monstruo si se encuentra, null en caso contrario
      */
     public Monstruo buscarMonstruoEnBosque(int bosqueId, int monstruoId) {
         try (EntityManager em = HibernateUtil.getEntityManager()) {
@@ -339,11 +387,11 @@ public class ControllerBosque {
     }
 
     /**
-     * Elimina un bosque de la base de datos dado su id
-     * @param id
-     * @return
+     * Elimina un bosque de la BD por su ID.
+     * 
+     * @param id El ID del bosque a eliminar
+     * @return true si se eliminó correctamente, false en caso contrario
      */
-
     public boolean eliminarBosque(int id) {
 
         boolean eliminado = false;
