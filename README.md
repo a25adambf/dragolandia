@@ -1,25 +1,21 @@
 # DRAGOLANDIA
 
 ## INTRODUCIÓN
-
+Dragolandia es un juego donde una serie de magos con la ayuda de un dragón lucha por el control de un bosque. Se trata de un jueog por turnos y el último en pie se queda con el control del bosque.
 
 ## ANÁLISIS
 
 ### DIAGRAMA DE CLASES
-'''mermaid
----
-config:
-  theme: redux-dark
----
-classDiagram
-    class Mago {
-        -int id
-        -string nombre
-        -int vida
-        -int nivelMagia
-        -List~Hechizo~ conjuros
-        +lanzarHechizo(Monstruo monstruo)
-    }
+```mermaid
+    classDiagram
+        class Mago {
+            -int id
+            -string nombre
+            -int vida
+            -int nivelMagia
+            -List~Hechizo~ conjuros
+            +lanzarHechizo(Monstruo monstruo)
+        }
 
     class Monstruo {
         -int id
@@ -93,16 +89,13 @@ classDiagram
     Hechizo <|-- Rayo : hereda
     Hechizo <|-- BolaNieve : hereda
     Hechizo <|-- AtaqueBasico : hereda
-    '''
+```
 
 ## DISEÑO
 
 ### ENTIDAD REALACIÓN
 
----
-config:
-  theme: redux-dark-color
----
+```mermaid
 erDiagram
     BOSQUES ||--o| DRAGONES : "tiene"
     BOSQUES ||--o| MONSTRUOS : "tiene jefe"
@@ -157,6 +150,7 @@ erDiagram
         int Mago_id FK
         int conjuros_id FK
     }
+```
 
 ### CAMBIOS Y MEJORAS
 
