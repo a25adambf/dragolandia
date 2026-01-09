@@ -49,10 +49,6 @@ public abstract class Hechizo {
     
     /** Descripción de los efectos del hechizo */
     private String descripcion;
-
-    /** Nivel de poder mágico del hechizo (no persistido) */
-    @Transient
-    private int nivelMagia;
     
     /**
      * Constructor por defecto de la clase Hechizo.
