@@ -34,7 +34,7 @@ import jakarta.persistence.Entity;
 @Entity
 @DiscriminatorValue(value = "Ataque Básico")
 public class AtaqueBasico extends Hechizo {
- 
+
     /**
      * Constructor de AtaqueBasico.
      * 

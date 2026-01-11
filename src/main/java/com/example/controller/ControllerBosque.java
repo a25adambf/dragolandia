@@ -107,6 +107,9 @@ public class ControllerBosque {
     * @return true si se modificó correctamente, false en caso contrario
     */
     public boolean modificarNombre(String nombre, int id) {
+        
+        boolean modificado = false;
+        
         EntityManager em = HibernateUtil.getEntityManager();
         try {
             em.getTransaction().begin();
@@ -117,10 +120,11 @@ public class ControllerBosque {
                 em.merge(bosque);
                 em.getTransaction().commit();
                 System.out.println("Nombre del bosque modificado correctamente");
-                return true;
+
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
+                modificado = false;
             }
 
         } catch (Exception e) {
@@ -128,10 +132,12 @@ public class ControllerBosque {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
+            return modificado;
         } finally {
             em.close();
         }
+
+        return modificado;
     }
 
     /**
@@ -142,6 +148,10 @@ public class ControllerBosque {
      * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarNivelPeligro(int nivelPeligro, int id) {
+
+        boolean modificado = false;
+
+
         EntityManager em = HibernateUtil.getEntityManager();
         try {
             em.getTransaction().begin();
@@ -152,10 +162,12 @@ public class ControllerBosque {
                 em.merge(bosque);
                 em.getTransaction().commit();
                 System.out.println("Nivel de peligro del bosque modificado correctamente");
-                return true;
+                
+                modificado = true;
+
             } else {
                 em.getTransaction().commit();
-                return false;
+                modificado =  false;
             }
 
         } catch (Exception e) {
@@ -163,10 +175,12 @@ public class ControllerBosque {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
+            return modificado;
         } finally {
             em.close();
         }
+
+        return modificado;
     }
 
     /**
@@ -180,6 +194,9 @@ public class ControllerBosque {
      * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarMonstruoJefe(int monstruoJefeId, int bosqueId) {
+
+        boolean modificado = false;
+
         EntityManager em = HibernateUtil.getEntityManager();
         try {
             em.getTransaction().begin();
@@ -202,17 +219,17 @@ public class ControllerBosque {
                 if (!existeEnLista) {
                     em.getTransaction().commit();
                     System.out.println("El monstruo no existe en la lista del bosque");
-                    return false;
+                    modificado =  false;
                 }
 
                 bosque.setMonstruoJefe(monstruo);
                 em.merge(bosque);
                 em.getTransaction().commit();
                 System.out.println("Monstruo jefe del bosque modificado correctamente");
-                return true;
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
+                modificado = false;
             }
 
         } catch (Exception e) {
@@ -220,10 +237,12 @@ public class ControllerBosque {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
+            return modificado;
         } finally {
             em.close();
         }
+
+        return modificado;
     }
 
     /**
