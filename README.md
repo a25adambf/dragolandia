@@ -99,10 +99,7 @@ Dragolandia es un juego donde una serie de magos con la ayuda de un dragón luch
 erDiagram
     BOSQUES ||--o| DRAGONES : "tiene"
     BOSQUES ||--o| MONSTRUOS : "tiene jefe"
-    BOSQUES ||--o{ BOSQUES_MONSTRUOS : "contiene"
-    MONSTRUOS ||--o{ BOSQUES_MONSTRUOS : "habita en"
-    MAGOS ||--o{ MAGOS_HECHIZOS : "conjura"
-    HECHIZOS ||--o{ MAGOS_HECHIZOS : "es conjurado por"
+    MAGOS  }|--|{ HECHIZOS : "conoce"
 
     BOSQUES {
         int id PK
@@ -127,10 +124,6 @@ erDiagram
         int vida
     }
 
-    BOSQUES_MONSTRUOS {
-        int Bosque_id FK
-        int monstruos_id FK
-    }
 
     MAGOS {
         int id PK
@@ -144,11 +137,6 @@ erDiagram
         int id PK
         string descripcion
         string nombre
-    }
-
-    MAGOS_HECHIZOS {
-        int Mago_id FK
-        int conjuros_id FK
     }
 ```
 
