@@ -152,6 +152,8 @@ erDiagram
     }
 ```
 
-### CAMBIOS Y MEJORAS
+## CAMBIOS Y MEJORAS
 
 El principal cambio que introduciría sería un sistema de maná para los magos. Es decir al invocar un hechizo gasta maná, y a su vez recupera una pequeña parte del total en cada turno.
+
+## [MANUAL DE USUARIO](MANUAL.md)
