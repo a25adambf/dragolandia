@@ -1,9 +1,7 @@
 package com.example.controller;
 
 
-import com.example.model.Dragon;
 import com.example.model.Hechizo;
-import com.example.model.HibernateUtil;
 import com.example.model.Mago;
 
 import jakarta.persistence.EntityManager;
@@ -87,10 +85,8 @@ public class ControllerMago {
 
         } catch (Exception e) {
             System.out.println("Error al guarda el mago " + e.getMessage());
-            return null;
         }
         }
-        
         return mago;
     }
 
@@ -103,6 +99,9 @@ public class ControllerMago {
      */
     public boolean modificarNombre(String nombre, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
+
         try {
             em.getTransaction().begin();
             Mago mago = em.find(Mago.class, id);
@@ -112,10 +111,9 @@ public class ControllerMago {
                 em.merge(mago);
                 em.getTransaction().commit();
                 System.out.println("Nombre del mago modificado correctamente");
-                return true;
+                modificado = false;
             } else {
                 em.getTransaction().commit();
-                return false;
             }
 
         } catch (Exception e) {
@@ -127,6 +125,7 @@ public class ControllerMago {
         } finally {
             em.close();
         }
+        return modificado;
     }
 
     /**
@@ -138,6 +137,9 @@ public class ControllerMago {
      */
     public boolean modificarVida(int vida, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
+
         try {
             em.getTransaction().begin();
             Mago mago = em.find(Mago.class, id);
@@ -147,10 +149,9 @@ public class ControllerMago {
                 em.merge(mago);
                 em.getTransaction().commit();
                 System.out.println("Vida del mago modificada correctamente");
-                return true;
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
             }
 
         } catch (Exception e) {
@@ -158,10 +159,10 @@ public class ControllerMago {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+        return modificado;
     }
 
     /**
@@ -173,6 +174,9 @@ public class ControllerMago {
      */
     public boolean modificarNivelMagia(int nivelMagia, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
+
         try {
             em.getTransaction().begin();
             Mago mago = em.find(Mago.class, id);
@@ -182,10 +186,9 @@ public class ControllerMago {
                 em.merge(mago);
                 em.getTransaction().commit();
                 System.out.println("Nivel de magia del mago modificado correctamente");
-                return true;
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
             }
 
         } catch (Exception e) {
@@ -193,10 +196,11 @@ public class ControllerMago {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+
+        return modificado;
     }
 
 
@@ -327,10 +331,10 @@ public class ControllerMago {
             if (mago != null && mago.getConjuros() != null) {
                 hechizos = new java.util.ArrayList<>(mago.getConjuros());
             }
-            return hechizos;
         } finally {
             em.close();
         }
+        return hechizos;
     }
 
     /**
@@ -348,10 +352,11 @@ public class ControllerMago {
             if (mago != null && mago.getConjuros() != null) {
                 numHechizos = mago.getConjuros().size();
             }
-            return numHechizos;
         } finally {
             em.close();
         }
+
+        return numHechizos;
     }
 
     /**
@@ -372,7 +377,6 @@ public class ControllerMago {
 
         } catch (Exception e) {
             System.out.println("Error al obtener el dragón " + e.getMessage());
-            return null;
         }
 
         return mago;
@@ -404,7 +408,6 @@ public class ControllerMago {
 
         } catch (Exception e) {
             System.out.println("Error al eliminar el mago");
-            return eliminado;
         }
         
         return eliminado;

@@ -1,8 +1,6 @@
 package com.example.controller;
 
 
-import com.example.model.Dragon;
-import com.example.model.HibernateUtil;
 import com.example.model.Monstruo;
 import com.example.model.TipoMonstruo;
 
@@ -85,10 +83,8 @@ public class ControllerMonstruo {
 
         } catch (Exception e) {
             System.out.println("Error al guarda el Monstruo " + e.getMessage());
-            return null;
         }
         }
-        
         return monstruo;
     }
 
@@ -102,6 +98,8 @@ public class ControllerMonstruo {
      */
     public boolean modificarNombre(String nombre, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
         try {
             em.getTransaction().begin();
             Monstruo monstruo = em.find(Monstruo.class, id);
@@ -111,10 +109,9 @@ public class ControllerMonstruo {
                 em.merge(monstruo);
                 em.getTransaction().commit();
                 System.out.println("Nombre del monstruo modificado correctamente");
-                return true;
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
             }
 
         } catch (Exception e) {
@@ -122,10 +119,11 @@ public class ControllerMonstruo {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+
+        return modificado;
     }
 
     /**
@@ -137,6 +135,9 @@ public class ControllerMonstruo {
      */
     public boolean modificarVida(int vida, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
+
         try {
             em.getTransaction().begin();
             Monstruo monstruo = em.find(Monstruo.class, id);
@@ -146,10 +147,9 @@ public class ControllerMonstruo {
                 em.merge(monstruo);
                 em.getTransaction().commit();
                 System.out.println("Vida del monstruo modificada correctamente");
-                return true;
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
             }
 
         } catch (Exception e) {
@@ -157,10 +157,11 @@ public class ControllerMonstruo {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+
+        return modificado;
     }
 
     /**
@@ -172,6 +173,8 @@ public class ControllerMonstruo {
      */
     public boolean modificarFuerza(int fuerza, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
         try {
             em.getTransaction().begin();
             Monstruo monstruo = em.find(Monstruo.class, id);
@@ -181,10 +184,9 @@ public class ControllerMonstruo {
                 em.merge(monstruo);
                 em.getTransaction().commit();
                 System.out.println("Fuerza del monstruo modificada correctamente");
-                return true;
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
             }
 
         } catch (Exception e) {
@@ -192,10 +194,10 @@ public class ControllerMonstruo {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+        return modificado;
     }
 
     /**
@@ -206,7 +208,11 @@ public class ControllerMonstruo {
      * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarTipo(TipoMonstruo tipo, int id) {
+
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
+
         try {
             em.getTransaction().begin();
             Monstruo monstruo = em.find(Monstruo.class, id);
@@ -216,10 +222,9 @@ public class ControllerMonstruo {
                 em.merge(monstruo);
                 em.getTransaction().commit();
                 System.out.println("Tipo del monstruo modificado correctamente");
-                return true;
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
             }
 
         } catch (Exception e) {
@@ -227,10 +232,10 @@ public class ControllerMonstruo {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+        return modificado;
     }
     /**
      * Obtiene un monstruo de la BD por su ID.
@@ -250,7 +255,6 @@ public class ControllerMonstruo {
 
         } catch (Exception e) {
             System.out.println("Error al obtener el dragón " + e.getMessage());
-            return monstruo;
         }
 
         return monstruo;
@@ -267,7 +271,6 @@ public class ControllerMonstruo {
 
         try (EntityManager em = HibernateUtil.getEntityManager()) {
 
-
             em.getTransaction().begin();
 
             Monstruo monstruo = em.find(Monstruo.class, id);
@@ -282,7 +285,6 @@ public class ControllerMonstruo {
 
         } catch (Exception e) {
             System.out.println("Error al eliminar el Monstruo");
-            return eliminado;
         }
         
         return eliminado;

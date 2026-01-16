@@ -1,4 +1,4 @@
-package com.example.model;
+package com.example.controller;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

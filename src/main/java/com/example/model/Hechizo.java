@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 /**
  * Clase abstracta Hechizo - Representa un hechizo en el mundo de Dragolandia.

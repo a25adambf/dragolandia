@@ -1,8 +1,6 @@
 package com.example.controller;
 
 
-import com.example.model.HibernateUtil;
-
 import jakarta.persistence.EntityManager;
 
 import com.example.model.Dragon;
@@ -81,7 +79,6 @@ public class ControllerDragon {
 
         } catch (Exception e) {
             System.out.println("Error al guarda el Dragon " + e.getMessage());
-            return null;
         }
         }
         
@@ -97,7 +94,11 @@ public class ControllerDragon {
      * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarNombre(String nombre, int id) {
+
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
+
         try {
             em.getTransaction().begin();
             Dragon dragon = em.find(Dragon.class, id);
@@ -107,10 +108,9 @@ public class ControllerDragon {
                 em.merge(dragon);
                 em.getTransaction().commit();
                 System.out.println("Nombre del dragón modificado correctamente");
-                return true;
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
             }
 
         } catch (Exception e) {
@@ -118,10 +118,11 @@ public class ControllerDragon {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+
+        return modificado;
     }
 
     /**
@@ -132,7 +133,11 @@ public class ControllerDragon {
      * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarIntensidadFuego(int intensidad, int id) {
+
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
+
         try {
             em.getTransaction().begin();
             Dragon dragon = em.find(Dragon.class, id);
@@ -142,10 +147,9 @@ public class ControllerDragon {
                 em.merge(dragon);
                 em.getTransaction().commit();
                 System.out.println("Intensidad de fuego del dragón modificada correctamente");
-                return true;
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
             }
 
         } catch (Exception e) {
@@ -153,10 +157,10 @@ public class ControllerDragon {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+        return modificado;
     }
 
     /**
@@ -167,7 +171,11 @@ public class ControllerDragon {
      * @return true si se modificó correctamente, false en caso contrario
      */
     public boolean modificarResistencia(int resistencia, int id) {
+
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
+
         try {
             em.getTransaction().begin();
             Dragon dragon = em.find(Dragon.class, id);
@@ -177,10 +185,9 @@ public class ControllerDragon {
                 em.merge(dragon);
                 em.getTransaction().commit();
                 System.out.println("Resistencia del dragón modificada correctamente");
-                return true;
+                modificado = true;
             } else {
                 em.getTransaction().commit();
-                return false;
             }
 
         } catch (Exception e) {
@@ -188,10 +195,10 @@ public class ControllerDragon {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+        return modificado;
     }
     /**
      * Obtiene un dragón de la BD por su ID.
@@ -211,7 +218,6 @@ public class ControllerDragon {
 
         } catch (Exception e) {
             System.out.println("Error al obtener el dragón " + e.getMessage());
-            return dragon;
         }
 
         return dragon;
@@ -242,7 +248,6 @@ public class ControllerDragon {
 
         } catch (Exception e) {
             System.out.println("Error al eliminar el Dragon");
-            return eliminado;
         }
         
         return eliminado;

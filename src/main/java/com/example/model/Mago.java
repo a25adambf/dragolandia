@@ -154,5 +154,5 @@ public class Mago {
             this.nivelMagia = 0;
         } else
             this.nivelMagia = nivelMagia;    
-        }
+    }
 }

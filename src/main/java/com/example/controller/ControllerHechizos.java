@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.model.HibernateUtil;
 import com.example.model.Hechizo;
 import com.example.model.AtaqueBasico;
 import com.example.model.BolaFuego;
@@ -63,25 +62,28 @@ public class ControllerHechizos {
      * @return La instancia única de BolaFuego, o null si hay error
      */
     public BolaFuego obtenerBolaFuego() {
+
         EntityManager em = HibernateUtil.getEntityManager();
+
+        BolaFuego bolaFuego = null;
+
         try {
-            BolaFuego bola = em.find(BolaFuego.class, ID_BOLA_FUEGO);
+            bolaFuego = em.find(BolaFuego.class, ID_BOLA_FUEGO);
             
-            if (bola == null) {
-                bola = new BolaFuego();
+            if (bolaFuego == null) {
+                bolaFuego = new BolaFuego();
                 em.getTransaction().begin();
-                em.persist(bola);
+                em.persist(bolaFuego);
                 em.getTransaction().commit();
-                System.out.println("Hechizo Bola de fuego guardado con id: " + bola.getId());
+                System.out.println("Hechizo Bola de fuego guardado con id: " + bolaFuego.getId());
             }
             
-            return bola;
         } catch (Exception e) {
             System.out.println("Error al obtener Bola de Fuego: " + e.getMessage());
-            return null;
         } finally {
             em.close();
         }
+        return bolaFuego;
     }
 
     /**
@@ -93,25 +95,26 @@ public class ControllerHechizos {
      */
     public BolaNieve obtenerBolaNieve() {
         EntityManager em = HibernateUtil.getEntityManager();
+
+        BolaNieve bolaNieve = null;
         try {
-            BolaNieve bola = em.find(BolaNieve.class, ID_BOLA_NIEVE);
+            bolaNieve = em.find(BolaNieve.class, ID_BOLA_NIEVE);
             
-            if (bola == null) {
+            if (bolaNieve == null) {
                 // No existe en la base de datos, crear nueva 
-                bola = new BolaNieve();
+                bolaNieve = new BolaNieve();
                 em.getTransaction().begin();
-                em.persist(bola);
+                em.persist(bolaNieve);
                 em.getTransaction().commit();
-                System.out.println("Hechizo Bola de nieve guardado con id: " + bola.getId());
+                System.out.println("Hechizo Bola de nieve guardado con id: " + bolaNieve.getId());
             }
             
-            return bola;
         } catch (Exception e) {
             System.out.println("Error al obtener Bola de Nieve: " + e.getMessage());
-            return null;
         } finally {
             em.close();
         }
+        return bolaNieve;
     }
 
     /**
@@ -122,9 +125,13 @@ public class ControllerHechizos {
      * @return La instancia única de Rayo, o null si hay error
      */
     public Rayo obtenerRayo() {
+
         EntityManager em = HibernateUtil.getEntityManager();
+
+        Rayo rayo = null;
+        
         try {
-            Rayo rayo = em.find(Rayo.class, ID_RAYO);
+            rayo = em.find(Rayo.class, ID_RAYO);
             
             if (rayo == null) {
                 // No existe en la base de datos, crear nueva
@@ -135,13 +142,12 @@ public class ControllerHechizos {
                 System.out.println("Hechizo Rayo guardado con id: " + rayo.getId());
             }
             
-            return rayo;
         } catch (Exception e) {
             System.out.println("Error al obtener Rayo: " + e.getMessage());
-            return null;
         } finally {
             em.close();
         }
+        return rayo;
     }
 
     /**
@@ -152,9 +158,13 @@ public class ControllerHechizos {
      * @return La instancia única de AtaqueBasico, o null si hay error
      */
     public AtaqueBasico obtenerAtaqueBasico() {
+
         EntityManager em = HibernateUtil.getEntityManager();
+
+        AtaqueBasico ataqueBasico = null;
+
         try {
-            AtaqueBasico ataqueBasico = em.find(AtaqueBasico.class, ID_ATAQUE_BASICO);
+            ataqueBasico = em.find(AtaqueBasico.class, ID_ATAQUE_BASICO);
             
             if (ataqueBasico == null) {
                 // No existe en la base de datos, crear nueva
@@ -165,13 +175,13 @@ public class ControllerHechizos {
                 System.out.println("Hechizo Ataque Básico guardado con id: " + ataqueBasico.getId());
             }
             
-            return ataqueBasico;
         } catch (Exception e) {
             System.out.println("Error al obtener Ataque Básico: " + e.getMessage());
-            return null;
         } finally {
             em.close();
         }
+
+        return ataqueBasico;
     }
 
     /**
@@ -183,6 +193,9 @@ public class ControllerHechizos {
      */
     public boolean modificarNombre(String nombre, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
+
         try {
             em.getTransaction().begin();
             Hechizo hechizo = em.find(Hechizo.class, id);
@@ -192,9 +205,7 @@ public class ControllerHechizos {
                 em.merge(hechizo);
                 em.getTransaction().commit();
                 System.out.println("Nombre del hechizo modificado correctamente");
-                return true;
-            } else {
-                return false;
+                modificado = true;
             }
 
         } catch (Exception e) {
@@ -202,10 +213,10 @@ public class ControllerHechizos {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+        return modificado;
     }
 
     /**
@@ -217,6 +228,9 @@ public class ControllerHechizos {
      */
     public boolean modificarDescripcion(String descripcion, int id) {
         EntityManager em = HibernateUtil.getEntityManager();
+
+        boolean modificado = false;
+
         try {
             em.getTransaction().begin();
             Hechizo hechizo = em.find(Hechizo.class, id);
@@ -226,9 +240,7 @@ public class ControllerHechizos {
                 em.merge(hechizo);
                 em.getTransaction().commit();
                 System.out.println("Descripción del hechizo modificada correctamente");
-                return true;
-            } else {
-                return false;
+                modificado = true;
             }
 
         } catch (Exception e) {
@@ -236,10 +248,10 @@ public class ControllerHechizos {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            return false;
         } finally {
             em.close();
         }
+        return modificado;
     }
 
     /**
@@ -249,12 +261,17 @@ public class ControllerHechizos {
      * @return El hechizo encontrado, o null si no existe
      */
     public Hechizo obtenerHechizoPorId(int id) {
+
         EntityManager em = HibernateUtil.getEntityManager();
+
+        Hechizo hechizo = null;
+
         try {
-            return em.find(Hechizo.class, id);
+            hechizo = em.find(Hechizo.class, id);
         } finally {
             em.close();
         }
+        return hechizo;
     }
 
     /**

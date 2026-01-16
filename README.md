@@ -145,3 +145,5 @@ erDiagram
 El principal cambio que introduciría sería un sistema de maná para los magos. Es decir al invocar un hechizo gasta maná, y a su vez recupera una pequeña parte del total en cada turno.
 
 ## [MANUAL DE USUARIO](MANUAL.md)
+
+## [ESTRUCTURA TABLAS](AD-UD3-AT.06-Dragolandia%20hibernate_BreaFragaAdam.pdf)
